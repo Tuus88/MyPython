@@ -1,0 +1,1870 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyMp/bt3xmg86LyCumlal8gP",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/Tuus88/MyPython/blob/main/F2026%20CSE6040%20Notebooks\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "#Notebook 0 & 1\n",
+        "\n",
+        "*   display(f'The result is {result}) #보여주기 f' 포맷\n",
+        "### join() :\n",
+        "- concatenates all input items in a *collections* into a *string*\n",
+        "\n",
+        "- eg) return '-'.join([first, second]) \\\n",
+        "     🤔 return first +'-' + second\n",
+        "- eg) myDict = {\"name\": \"Steve\", \"work\": \"AER\"}\n",
+        "      mySeparator = \" - \"\\\n",
+        "      x = mySeparator.join(myDict)\\\n",
+        "      ==> 'name - work'\n",
+        "- eg) \"\".join(reversed(L)) #순서를 바꾸어 연결한 string\n",
+        "####reversed(L) == L[::-1]\n",
+        "- returns a reverse iterator without copying in memory\n",
+        "- L.reverse(): reverse L itself\n",
+        "\n",
+        "###isinstance(object, type)\n",
+        "- returns boolean\n",
+        "- isinstance({\"hi\", (int, float, str, list, dict, tuple))\n",
+        "- from numbers import *number* : to verify if an object is numerical (int, complex numbers, fractions, or decimals)\n",
+        "#### floor fraction : a//b\n",
+        "- 나누어 얻은 값을 downward to whole int.(음수포함)\n",
+        "#### ceiling fraction : -(a//-b)\n",
+        "#### %: modulo\n",
+        "- a%-b: subtract -b to a until reach 0 or netive number\n",
+        "- -a%b: add b to -a until reach 0 or positive number\n",
+        "- divisor의 사인에 따라 음수/양수 결정\n",
+        "#### round()\n",
+        "- print(f'Average is {round((a+b+c)/3, 1})')\n",
+        "\n",
+        "#### a list containing the lengths of words in a string\n",
+        "- return [len(x) for x in s.split()]\n",
+        "- split() : a method of string\n",
+        "\n",
+        "\n",
+        "---\n",
+        "#### 1. a copy of the input list L with all occurrences of x removed\n",
+        "def remove_all_test(L, x):\n",
+        "\n",
+        "    return [val for val in L if val != x]\n",
+        "#### 2.  dictionary of indicies and non-zero values from a  input list.\n",
+        "def compress_vector_test(L):\n",
+        "\n",
+        "    d = {'inds': [], 'vals': []}\n",
+        "    for i, v in enumerate(L):\n",
+        "        if v != 0.0:\n",
+        "            d['inds'].append(i)\n",
+        "            d['vals'].append(v)\n",
+        "    return d\n",
+        "#### 3. Repeating Indices\n",
+        "- a list representing the vector based on a dictionary of indicies and values\n",
+        "- d={'inds':[0,3,7,3,3,5,1],\n",
+        "   'vals':[1.0,2.0,3.0,4.0,5.0,6.0,7.0]\n",
+        "   }\n",
+        "- result : [1.0, 7.0, 0.0, 11.0, 0.0, 6.0, 0.0, 3.0]\n",
+        "def decompress_vector_test(d, n=None):\n",
+        "    assert type(d['inds']) is list and type(d['vals']) is list, \"Not a list\"\n",
+        "    assert len(d['inds']) == len(d['vals']), \"Length mismatch\"\n",
+        "\n",
+        "    i_max = max(d['inds']) if d['inds'] else -1\n",
+        "    if n is None:\n",
+        "        n = i_max+1\n",
+        "    else:\n",
+        "        assert n > i_max, \"Bad value for full vector length\"\n",
+        "\n",
+        "    L = [0.0] * n\\\n",
+        "    for i, v in zip(d['inds'], d['vals']):\\\n",
+        "        L[i] += v\\\n",
+        "    return L\n",
+        "\n",
+        "#### 4. common indices\n",
+        "def DEBUG_find_common_inds_test(d1, d2):\\\n",
+        "    s1 = set(d1['inds'])\\\n",
+        "    s2 = set(d2['inds'])\\\n",
+        "    return sorted(s1 & s2)\n",
+        "---\n",
+        "grades = [\\\n",
+        "    ['Student', 'Exam 1', 'Exam 2', 'Exam 3'],\\\n",
+        "    ['Thorny', '100', '90', '80'],\\\n",
+        "    ['Mac', '88', '99', '111'],\\\n",
+        "    ['Farva', '45', '56', '67'],\\\n",
+        "    ['Rabbit', '59', '61', '67'],\\\n",
+        "    ['Ursula', '73', '79', '83'],\\\n",
+        "    ['Foster', '89', '97', '101']\n",
+        "]\n",
+        "#### 1.   student names from \"top to bottom\"\n",
+        "- L[0] == 학생이름, 1st item in sublist\n",
+        "- grades[1:] == all sub-lists except the 1st sub-list\n",
+        "- 또는,  students = []\\\n",
+        "  for i in range(1, len(grades)):\\\n",
+        "  students.append(grades[i][0])\n",
+        "\n",
+        "\n",
+        "\n",
+        "\n",
+        "\n"
+      ],
+      "metadata": {
+        "id": "ODjGQebXb_8h"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def get_students(grades):\n",
+        "\n",
+        "    return [L[0] for L in grades[1:]]"
+      ],
+      "metadata": {
+        "id": "C_G1LEBfkYLo"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "#### 2.    dictionary of scores for each student\n",
+        "- L[1:] - 각 학생의 성적 리스트\n",
+        "- result : {'Thorny': [100, 90, 80], 'Mac': [88, 99, 111], 'Farva': [45, 56, 67], 'Rabbit': [59, 61, 67], 'Ursula': [73, 79, 83], 'Foster': [89, 97, 101]}"
+      ],
+      "metadata": {
+        "id": "thX-6WZBnfRE"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def build_grade_lists(grades):\n",
+        "\n",
+        "    return {L[0]:[int(g) for g in L[1:]] for L in grades[1:]}"
+      ],
+      "metadata": {
+        "id": "rnTVg8dAj46p"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "#### 3.    assignment names\n",
+        "- result : ['Exam 1', 'Exam 2', 'Exam 3']"
+      ],
+      "metadata": {
+        "id": "-IWjK7_ot_X2"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def get_assignments(grades):\n",
+        "\n",
+        "    return grades[0][1:]"
+      ],
+      "metadata": {
+        "id": "ZdsocFbjj64t"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "#### 4.    dictionary of scores for each student\n",
+        "- result :  {'Thorny': {'Exam 1': 100, 'Exam 2': 90, 'Exam 3': 80}, 'Mac': {'Exam 1': 88, 'Exam 2': 99, 'Exam 3': 111}, 'Farva': {'Exam 1': 45, 'Exam 2': 56, 'Exam 3': 67}, 'Rabbit': {'Exam 1': 59, 'Exam 2': 61, 'Exam 3': 67}, 'Ursula': {'Exam 1': 73, 'Exam 2': 79, 'Exam 3': 83},'Foster': {'Exam 1': 89, 'Exam 2': 97, 'Exam 3': 101}}\n",
+        "### zip()\n",
+        "- combine 2 or more iterables (tuples, str, dict, list) into a 1 iterator\n",
+        "- unzip: eg) students, avg = zip(*g)\n",
+        "\n"
+      ],
+      "metadata": {
+        "id": "RF8ul7vCutrZ"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def build_grade_dicts(grades):\n",
+        "\n",
+        "    assignments = grades[0][1:]\n",
+        "    return {L[0]: dict(zip(assignments, [int(g) for g in L[1:]])) for L in grades[1:]}\n",
+        "\n",
+        "    # Alternative\n",
+        "    grade_dicts = {} # Empty\n",
+        "    for L in grades[1:]:\n",
+        "        grade_dicts[L[0]] = dict(zip(assignments, [int(g) for g in L[1:]]))\n",
+        "    return grade_dicts"
+      ],
+      "metadata": {
+        "id": "K5n312xnjynL"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "#### 5.    dictionary of average scores for each student\n",
+        "- result : {'Thorny': 90.0, 'Mac': 99.333, 'Farva': 56.0, 'Rabbit': 62.333, 'Ursula': 78.333, 'Foster': 95.667}\n",
+        "#### fmean()\n",
+        "- always converts to float avg\n",
+        "#### dict.**items()**\n",
+        "- returns key, value tuples\n",
+        "- used inside a loop to unpack keys and values \\\n",
+        "  eg) for k, v in d.items():"
+      ],
+      "metadata": {
+        "id": "nLCh_GAb0_0t"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def build_avg_by_student(grades):\n",
+        "\n",
+        "    grade_lists = {L[0]:[int(g) for g in L[1:]] for L in grades[1:]}\n",
+        "\n",
+        "    from statistics import fmean\n",
+        "    return {n: round(fmean(G),3) for n, G in grade_lists.items()}"
+      ],
+      "metadata": {
+        "id": "1g1mZDfQ1ajN"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "#### 6.    dictionary of scores for each assignment\n",
+        "- result : {'Exam 1': [100, 88, 45, 59, 73, 89], 'Exam 2': [90, 99, 56, 61, 79, 97], 'Exam 3': [80, 111, 67, 67, 83, 101]}\n",
+        "#### enumerate()\n",
+        "- loop over and have an automatic counter\n",
+        "- eg) for i, (k,v) in enumerate(d.items()):"
+      ],
+      "metadata": {
+        "id": "2BnoTND925Rk"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def build_grade_by_asn(grades):\n",
+        "\n",
+        "    assignments = grades[0][1:]\n",
+        "\n",
+        "    return {a:[int(L[k+1]) for L in grades[1:]] for k,a in enumerate(assignments)} #int(L[k+1])는 각 a에 해당하는 학생별 score를 loop로 배정\n",
+        "\n",
+        "    #alternative\n",
+        "    assignments = grades[0][1:] #assignments = 'Exam 1', 'Exam 2', 'Exam 3'\n",
+        "    grades_by_assignment = {} # Empty dictionary\n",
+        "    for k, a in enumerate(assignments): # k = 0, 1, 2.  a = 'Exam 1', 'Exam 2', 'Exam 3'\n",
+        "        grades_by_assignment[a] = [int(L[k+1]) for L in grades[1:]] #grade[1] == ['Thorny', '100', '90', '80'], L[0+1]=='100', L[0+2]=='88'\n",
+        "    return grades_by_assignment"
+      ],
+      "metadata": {
+        "id": "z5TAuPwW51aU"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "#### 7.    dictionary of average for each assignment\n",
+        "- result : {'Exam 1': 75.667, 'Exam 2': 80.333, 'Exam 3': 84.833}"
+      ],
+      "metadata": {
+        "id": "Gi_Lo12lfb2Z"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def DEBUG_build_avg_by_asn(grades):\n",
+        "\n",
+        "    grades_by_assignment = {a:[int(L[k+1]) for L in grades[1:]] for k,a in enumerate(grades[0][1:])}\n",
+        "    from statistics import fmean\n",
+        "    return {a: round(fmean(G),3) for a, G in grades_by_assignment.items()}"
+      ],
+      "metadata": {
+        "id": "afwy86kefl21"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "8. a list of sorted students\n",
+        "- result : ['Abigail', 'Mac', 'Foster', 'Thorny', 'Ursula', 'Rabbit', 'Farva']\n",
+        "- lambda item: (-item[1], item[0])\\\n",
+        "  -item[1] ↘ descending order \\\n",
+        "  item[0] if 2 values are the same value, ascending order.\n",
+        "\n"
+      ],
+      "metadata": {
+        "id": "qNPBprxJfrzd"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def get_ranked_students(grades):\n",
+        "\n",
+        "    avg_grades_by_student = build_avg_by_student(grades)\n",
+        "    return [k for k,v in sorted(avg_grades_by_student.items(), key=lambda item: (-item[1],item[0]))]"
+      ],
+      "metadata": {
+        "id": "hNGhDzRDf6Ps"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "---\n",
+        "\n",
+        "\n",
+        "#Notebook 2\n",
+        "\n",
+        "#### 1. Normalize the input string by lowercasing and removing non-alphabetic, non-whitespace characters\n"
+      ],
+      "metadata": {
+        "id": "C-uUe7-ghnTF"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def normalize_string(s):\n",
+        "    assert type (s) is str\n",
+        "\n",
+        "    '''order:\n",
+        "    1. s.lower()\n",
+        "    2. assign to c\n",
+        "    3. if condition\n",
+        "    4. if True, append the c to essential_chars\n",
+        "    5. loop 2-4 for every char\n",
+        "    '''\n",
+        "    essential_chars = [c for c in s.lower() if c.isalpha() or c.isspace()]\n",
+        "    return ''.join(essential_chars)"
+      ],
+      "metadata": {
+        "id": "Xcq5d-qttFvb"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# fxn returns a list of splited words which are only lower-case alphabet only\n",
+        "def get_normalized_words(s):\n",
+        "    assert type(s) is str\n",
+        "\n",
+        "    # normalize_string fxn removed ','after perspiciatis\n",
+        "    return normalize_string(s).split()"
+      ],
+      "metadata": {
+        "id": "kGIy1rNq-xpf"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "#### 2. a list of sets corresponding to distinct letters in the normalized words\n",
+        "- Returns: list of set: A list of sets, each containing the distinct letters of a normalized word. \\\n",
+        "The output itemsets should appear in the same order as their corresponding words in the input text.\n",
+        "The normalization process involves lowercasing the text and removing non-alphabetic, non-whitespace\n",
+        "- results : [{'s', 'e', 'd'}, {'t', 'u'}, {'s', 'i', 't', 'p', 'a', 'e', 'c', 'r'}, {'n', 'e', 'd', 'u'}, {'s', 'o', 'm', 'i', 'n'}]"
+      ],
+      "metadata": {
+        "id": "xKApC2FR_vIU"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def make_itemsets_unstructured_text(text):\n",
+        "\n",
+        "    return [set(word) for word in get_normalized_words(text)]\n",
+        "\n",
+        "# Alternative:\n",
+        "    # 1. normalize text first\n",
+        "    n_text = get_normalized_words(text)\n",
+        "\n",
+        "    # 2. loop to get the distinct letters from each word\n",
+        "    itemsets = []\n",
+        "    for word in n_text:\n",
+        "        distinct_letters = set(word)\n",
+        "    # 3. within loop, append each set of distinct_letters to a list called 'itemsets'\n",
+        "        itemsets.append (distinct_letters)\n",
+        "    return itemsets\n"
+      ],
+      "metadata": {
+        "id": "_Oh4U2dFGS7M"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "#### 3. the pair_counts default dictionary for all item pairs in the given itemset\n",
+        "- Args:\\\n",
+        " pair_counts (defaultdict): The dictionary to update.\\\n",
+        " itemset (set): The set of items to consider.\n",
+        "- Returns: None - The function updates the pair_counts dictionary in place.\n",
+        "- result : After first_itemset:\n",
+        "{('g', 'o'): 1, ('o', 'g'): 1}\n",
+        "After second_itemset:\n",
+        "{('g', 'o'): 2, ('o', 'g'): 2, ('g', 'd'): 1, ('d', 'g'): 1, ('o', 'd'): 1, ('d', 'o'): 1}\n",
+        "#### combinations(iterable, r)\n",
+        "- returns r-length tuples in sorted order"
+      ],
+      "metadata": {
+        "id": "SIWRNK7DRsIs"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "itemsets = [set('go'), set('dog')]\n",
+        "\n",
+        "def update_pair_counts(pair_counts, itemset):\n",
+        "    assert type (pair_counts) is defaultdict\n",
+        "    from collections import defaultdict\n",
+        "    from itertools import combinations\n",
+        "\n",
+        "    for (a, b) in combinations(itemset, 2):\n",
+        "        pair_counts[(a, b)] += 1\n",
+        "        pair_counts[(b, a)] += 1\n"
+      ],
+      "metadata": {
+        "id": "gNIuB67vRvsO"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "#### 4.  the item_counts default dictionary for all items in the itemset\n",
+        "- Args:\\\n",
+        "item_counts (defaultdict): The dictionary to update.\\\n",
+        "itemset (set): The set of items to consider.\n",
+        "- Returns: None - The function updates the item_counts dictionary in place.\n",
+        "- result: After first_itemset:\n",
+        "{'g': 1, 'o': 1}\n",
+        "After second_itemset:\n",
+        "{'g': 2, 'o': 2, 'd': 1}"
+      ],
+      "metadata": {
+        "id": "lJ2lEo1D9E98"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from collections import defaultdict\n",
+        "item_counts = defaultdict(int)\n",
+        "\n",
+        "def update_item_counts(item_counts, itemset):\n",
+        "    assert type(item_counts) is defaultdict\n",
+        "\n",
+        "    for a in itemset: # each item is assigned to a\n",
+        "        item_counts[a] += 1 # read its current cnt, add 1, and store the updated cnt"
+      ],
+      "metadata": {
+        "id": "jkjvMF7P97Bm"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "#### 5. a list of the distinct items sets, given a CSV str\n",
+        "- result : [{'peanut butter', 'milk', 'eggs', 'oatmeal'}, {'pancake mix', 'butter', 'maple syrup'}, {'milk', 'dog treats'}]"
+      ],
+      "metadata": {
+        "id": "dSqyqAJZtn42"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def make_itemsets_csv(csv_str):\n",
+        "\n",
+        "    return [set(line.split(',')) for line in csv_str.splitlines()]\n",
+        "\n",
+        "    # Equivalent:\n",
+        "    itemsets = []\n",
+        "    for line in csv_str.splitlines():\n",
+        "        itemsets.append(set(line.split(',')))\n",
+        "    return itemsets\n"
+      ],
+      "metadata": {
+        "id": "Pi8SW-UeuTp9"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "#### 1. the Pairwise association rules by calculating confidence\n",
+        "- conf[(a, b)] = pair_counts[(a, b)] / item_counts[a]\\\n",
+        " =  confidence of the rule a → b\n",
+        "- calculates *how often b appears when a appears*, and stores the result in conf.\\\n",
+        "pair_counts[(a, b)] — get the number of times a and b appear together.\\\n",
+        "Store the result in conf, using the tuple (a, b) as the dictionary key.\n",
+        "\n",
+        "- create Association rules from pair_counts and item_counts\n",
+        "- results (eg) :\\\n",
+        "conf(blue fish => red fish) = 0.818\\\n",
+        "conf(one fish => red fish) = 0.809\\\n",
+        "conf(two fish => red fish) = 0.797\n",
+        "\n"
+      ],
+      "metadata": {
+        "id": "y-ILQfG2A86j"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def create_rules_from_counts(pair_counts, item_counts):\n",
+        "    rules = {} # (item_a, item_b) -> conf (item_a => item_b)\n",
+        "\n",
+        "    for (a, b) in pair_counts:\n",
+        "        assert a in item_counts\n",
+        "\n",
+        "        conf_ab = pair_counts[(a, b)] / item_counts[a]\n",
+        "        rules[(a, b)] = conf_ab\n",
+        "\n",
+        "    return rules\n"
+      ],
+      "metadata": {
+        "id": "ZMjABOOcDM9g"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "#### 2. Filter the confidence ules based on a threshold\n",
+        "- remove any rules not exceeding threshold\n",
+        "- returns: A dict containing only the rules with confidence >= threshold.\n",
+        "- filtered_rules.update({rule: conf})\\\n",
+        "If rule already exists in filtered_rules, its value is replaced with conf.\\\n",
+        "If rule does not exist, a new entry is added."
+      ],
+      "metadata": {
+        "id": "g5F-PXZ0VVw6"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def filter_rules_by_conf(rules, threshold):\n",
+        "    # order of processing\n",
+        "    # 1. evaluate rules.items()\n",
+        "    # 2. if condition\n",
+        "    # 3. rule:conf - add qualifying pair to the new dict (rule=key, conf=value)\n",
+        "    # 4. repeat for every pair\n",
+        "    # 5. return the completed dict\n",
+        "    return {rule: conf for rule, conf in rules.items() if conf >= threshold}\n",
+        "\n",
+        "# Alternative:\n",
+        "    filtered_rules = {}\n",
+        "\n",
+        "    for rule, conf in rules.items():\n",
+        "        if conf >= threshold:\n",
+        "            filtered_rules[rule] = conf\n",
+        "\n",
+        "    return filtered_rules"
+      ],
+      "metadata": {
+        "id": "LQ96jGrkW9Y_"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "#### 3. Preprocess & Parse the string 's' into a list\n",
+        "- functions are objects like str, int, lists, so can be passed as arg to other fxn.\n"
+      ],
+      "metadata": {
+        "id": "pqSdzChHZqVq"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def preprocess_and_parse(s, preprocessor):\n",
+        "    preprocessed = preprocessor(s)\n",
+        "    return preprocessed.split()"
+      ],
+      "metadata": {
+        "id": "UKQmIGl8ZpG9"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "#### preprocessor() examples:"
+      ],
+      "metadata": {
+        "id": "dKMX5SEHy4Pq"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def lowercase_preprocessor(s):\n",
+        "    return s.lower()\n",
+        "\n",
+        "def remove_vowels_preprocessor(s):\n",
+        "    return ''.join([c for c in s if c.lower() not in 'aeiou'])\n",
+        "\n",
+        "def identity_preprocessor(s):\n",
+        "    return s\n",
+        "\n",
+        "def alternating_case_preprocessor(s):\n",
+        "    return ''.join([c.lower() if i % 2 == 0 else c.upper() for i, c in enumerate(s)])"
+      ],
+      "metadata": {
+        "id": "wfSr0pqszEQW"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "#### 4. create Assoication rules from a data source\n",
+        "- given itemset_maker(), filtered by confdence threshold & min item count\n",
+        "1. Parse \"receipts\" into sets of distinct \"items\".\\\n",
+        "The user should be able to define how this is done.\n",
+        "2. Process the itemsets into co-occurrence and occurrence counts.\n",
+        "3. Process the counts into confidence rules.\n",
+        "4. Filter the confidence rules based on a threshold.\n",
+        "5. Filter the confidence rules based on a minimum occurrence count."
+      ],
+      "metadata": {
+        "id": "Sc7ulLAc229S"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def create_rules_from_source(source, itemset_maker, conf_threshold, min_count):\n",
+        "\n",
+        "    # 1. initialize dict for pair_counts and item_counts\n",
+        "    pc = defaultdict(int)\n",
+        "    ic = defaultdict(int)\n",
+        "\n",
+        "    # 2. use itemset_maker fxn to create a list of itemsets\n",
+        "    make_itemsets_csv = itemset_maker(source)\n",
+        "\n",
+        "    for itemset in make_itemsets_csv:\n",
+        "        # Ex 3\n",
+        "        pc = update_pair_counts(pc, itemset)\n",
+        "        # Ex 4\n",
+        "        ic = update_item_counts(ic, itemset)\n",
+        "\n",
+        "    # 3. Ex 1 - create Association Rules from pc & ic\n",
+        "    rules = create_rules_from_counts(pc, ic)\n",
+        "\n",
+        "    # 4. Ex 2 - Filter Rules based on threshold\n",
+        "    filtered_dict = filter_rules_by_conf(rules, conf_threshold)\n",
+        "\n",
+        "    # 5. filter based on min_count\n",
+        "    final_dict = {}\n",
+        "    for pair, conf in filtered_dict.items():\n",
+        "        if ic[pair[0]] >= min_count:\n",
+        "            final_dict[pair] = conf\n",
+        "    return final_dict"
+      ],
+      "metadata": {
+        "id": "yq7DdjkP3fQj"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "#### 5. Given a list of rules dictionaries, return the set of rules (keys) that are common to all dictionaries\n",
+        "- Args: rules_list (list of dict)- A list where each element is a dictionary mapping pairs (a, b) to confidence values.\n",
+        "- Returns: set or None - A set of pairs (a, b) that are present as keys in all dictionaries in the input list. If the input list is empty, return None.\n",
+        "\n",
+        "#### intersection()\n",
+        "- returns a set containing common items in both set x and set y\n",
+        "- z = x.intersection(y)"
+      ],
+      "metadata": {
+        "id": "B3nbIZsY_rCB"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def common_rules(rules_list):\n",
+        "\n",
+        "    result = None\n",
+        "    #print(rules_list)\n",
+        "    # iterate through the rules_list\n",
+        "    for rules in rules_list:\n",
+        "        # if result = None then set to rules.keys()\n",
+        "        if result is None:\n",
+        "            result = set(rules.keys()) #returns all the keys in the dict rules\n",
+        "\n",
+        "        # else get intersection\n",
+        "        else:\n",
+        "            result = result.intersection(set(rules.keys()))\n",
+        "\n",
+        "    return result"
+      ],
+      "metadata": {
+        "id": "xAyK4lroATod"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "\n",
+        "\n",
+        "---\n",
+        "# Notebook 4\n",
+        "\n"
+      ],
+      "metadata": {
+        "id": "kTfcDhFqC2JQ"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "#### 1. Integers as strings\n",
+        "- takes a string of digits s in the base given by base. It returns its value as an integer.\n"
+      ],
+      "metadata": {
+        "id": "R1NcFM_yDkQw"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def eval_string(s, base=2):\n",
+        "    assert type(s) is str\n",
+        "    assert 2 <= base <= 36\n",
+        "\n",
+        "    return int(s, base)"
+      ],
+      "metadata": {
+        "id": "i18f68-qDu5-"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "#### 2. Fractional values\n",
+        "- returns its corresponding floating-point value\n",
+        "-   eval_strfrac('3.14', base=10) ~= 3.14\\\n",
+        "    eval_strfrac('100.101', base=2) == 4.625\\\n",
+        "    eval_strfrac('2c', base=16) ~= 44.0"
+      ],
+      "metadata": {
+        "id": "cHoLyW6aEG_t"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def eval_strfrac(s, base=2):\n",
+        "\n",
+        "    s_parts = s.split('.')\n",
+        "    value_int = eval_string(s_parts[0], base)\n",
+        "    if len(s_parts) == 2:\n",
+        "        r = len(s_parts[1])\n",
+        "        value_frac = eval_string(s_parts[1], base) * (float(base) ** (-r))\n",
+        "    else:\n",
+        "        value_frac = 0\n",
+        "    return float(value_int) + value_frac\n",
+        "\n",
+        "    # mine:\n",
+        "    if '.' in s:\n",
+        "        a = s.split('.')[0]\n",
+        "        b = s.split('.')[1]\n",
+        "        a_int = eval_string(a, base)\n",
+        "        print(a_int)\n",
+        "        b_int = eval_string(b, base) / (base ** len(b))\n",
+        "        print(b_int)\n",
+        "        return float(a_int + b_int)\n",
+        "    else:\n",
+        "        return float(int(s, base))"
+      ],
+      "metadata": {
+        "id": "O9UYHCeSI6MV"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "#### 3. Floating-point encoding\n",
+        "- a normalized scientific notation consisting of a base, a sign, a fractional significand or mantissa, and a signed integer exponent\n",
+        "- to convert this string back into the floating-point value, you could do the following:\n",
+        "\n",
+        "1. Record the sign as a value, v_sign, which is either +1 or -1.\n",
+        "2. Convert the significand into a fractional value, v_signif, assuming base-16 digits.\n",
+        "3. Extract the exponent as a signed integer value, v_exp.\n",
+        "4. Compute the final value as v_sign * v_signif * (2.0**v_exp).\n",
+        "- result: ('-', '1.0100000000000010000000000000000000000000000000000000', 10)"
+      ],
+      "metadata": {
+        "id": "p-rQbI7-Kj03"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def print_fp_hex(v):\n",
+        "    assert type(v) is float\n",
+        "    print(\"v = {} ==> v.hex() == '{}'\".format(v, v.hex()))"
+      ],
+      "metadata": {
+        "id": "ZFZjro_FLHpe"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def fp_bin(v):\n",
+        "    assert type(v) is float\n",
+        "\n",
+        "    def hex2bin(num, width=4): # Following hint...\n",
+        "        return bin(int(num, base=16))[2:].zfill(width)\n",
+        "\n",
+        "    sign = '-' if v < 0 else '+'\n",
+        "    v = abs(v).hex()[2:]\n",
+        "    significand, exponent = v.split('p')\n",
+        "    exponent = int(exponent)\n",
+        "    signif_lead, signif_rem = significand.split('.')\n",
+        "\n",
+        "    # replace hex character with 4 digit binary literal\n",
+        "    signif_rem = ''.join([hex2bin(x, 4) for x in signif_rem])\n",
+        "    signif = signif_lead + '.' + signif_rem\n",
+        "    signif += '0' * (54 - len(signif))\n",
+        "    return (sign, signif, exponent)\n",
+        "\n",
+        "    # my ver: ---------------------------------------------\n",
+        "    assert type(v) is float\n",
+        "\n",
+        "    hex = v.hex()\n",
+        "\n",
+        "    # sign\n",
+        "    if v < 0:\n",
+        "        sign = '-'\n",
+        "    else:\n",
+        "        sign = '+'\n",
+        "\n",
+        "    # significand <= hexadigit:binary digit\n",
+        "    hex_d = {'0':'0000', '1':'0001', '2':'0010', '3':'0011',\n",
+        "             '4':'0100', '5':'0101', '6':'0110', '7':'0111',\n",
+        "             '8':'1000', '9':'1001', 'A':'1010', 'B':'1011',\n",
+        "             'C':'1100', 'D':'1101', 'E':'1110', 'F':'1111',\n",
+        "             'a':'1010', 'b':'1011',\n",
+        "             'c':'1100', 'd':'1101', 'e':'1110', 'f':'1111'}\n",
+        "\n",
+        "    #???? error: use small letters\n",
+        "    hex_p0 = hex.split('p')[0]\n",
+        "    #print(hex)\n",
+        "    #print(hex_p0)\n",
+        "    hex_dec = hex_p0.split('.')[1]\n",
+        "    #print(hex_dec)\n",
+        "    # hex_dec = 4002000000000\n",
+        "\n",
+        "    b = ''\n",
+        "    for i in hex_dec:\n",
+        "        b += hex_d[i]\n",
+        "    #print (b)\n",
+        "\n",
+        "    if len(b) < 52:\n",
+        "        missing = 52 - len(b)\n",
+        "        b += '0' * missing\n",
+        "\n",
+        "    if v == 0:\n",
+        "        a = '0.'\n",
+        "    else:\n",
+        "        a = '1.'\n",
+        "\n",
+        "    significand  = a + b\n",
+        "\n",
+        "    exp = int(hex.split('p')[1])\n",
+        "\n",
+        "    return (sign, significand, exp)"
+      ],
+      "metadata": {
+        "id": "RyLeUQu7MnEl"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "#### 4. convert a floating-point value (sign, significand, exponent) tuple in a base to a float\n",
+        "- sign: +/-, signficand: str, exponent: int\n",
+        "- eval_fp(-, 2.G0EBPT, -1, 32)\n",
+        "--> -0.0781387033930514"
+      ],
+      "metadata": {
+        "id": "QdojKEae9FaG"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def eval_fp(sign, significand, exponent, base=2):\n",
+        "    assert sign in ['+', '-'], \"Sign bit must be '+' or '-', not '{}'.\".format(sign)\n",
+        "    assert type(exponent) is int\n",
+        "\n",
+        "    ### BEGIN SOLUTION\n",
+        "    v_sign = 1.0 if sign == '+' else -1.0\n",
+        "    v_significand = eval_strfrac(significand, base)\n",
+        "    return v_sign * v_significand * (base ** exponent)\n",
+        "\n",
+        "    # my ver ----------------------------------------------------------------\n",
+        "    num = eval_strfrac(significand, base)\n",
+        "    # to move decimal point to a desired position\n",
+        "    num = num * (base ** exponent)\n",
+        "    if sign == '+':\n",
+        "        return num\n",
+        "    else:\n",
+        "        return -num"
+      ],
+      "metadata": {
+        "id": "ygq_ZSgs9_WC"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "#### 5. Sum u == (u_sign, u_signif, u_exp) & v == (v_sign, v_signif, v_exp) resulting significand truncated to signif_bit digits\n",
+        "- signif_bits includes the leading 1. eg) signif_bits == 4 --> 1.xxx\n",
+        "- u_signif and v_signif use 'signif_bits' bits (including the leading 1)\n",
+        "- result: add_fp_bin(('+', '1.010010', 0), ('-', '1.000000', -2), 7)\n",
+        "--> ('+', '1.000010', 0)\n",
+        "\n"
+      ],
+      "metadata": {
+        "id": "zRmcyEQX-Sr7"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def add_fp_bin(u, v, signif_bits):\n",
+        "    u_sign, u_signif, u_exp = u\n",
+        "    v_sign, v_signif, v_exp = v\n",
+        "    # You may assume normalized inputs at the given precision, `signif_bits`.\n",
+        "    assert u_signif[:2] in {'1.', '0.'} and len(u_signif) == (signif_bits+1)\n",
+        "    assert v_signif[:2] in {'1.', '0.'} and len(v_signif) == (signif_bits+1)\n",
+        "\n",
+        "    ### BEGIN SOLUTION\n",
+        "    u_value = eval_fp(u_sign, u_signif, u_exp, base=2)\n",
+        "    v_value = eval_fp(v_sign, v_signif, v_exp, base=2)\n",
+        "    w_value = u_value + v_value\n",
+        "    w_sign, w_signif, w_exp = fp_bin(w_value)\n",
+        "    w_signif = w_signif[:(signif_bits+1)] # May need to truncate\n",
+        "    return (w_sign, w_signif, w_exp)\n",
+        "\n",
+        "    #my ver ---------------------------------------------------------------\n",
+        "    # sum up the values\n",
+        "    u_val = eval_fp(*u, base=2) #u means u_sign, u_signif, u_exp\n",
+        "    v_val = eval_fp(*v, base=2)\n",
+        "    w_val = u_val + v_val\n",
+        "    # using fp_bin() convert to binary\n",
+        "    w_binary = fp_bin(w_val)\n",
+        "    # truncate the significand\n",
+        "    w_signf_trunc = w_binary[1][:signif_bits+1] # to cover '.' 1 added\n",
+        "    # return sign, signf, exp\n",
+        "    return w_binary[0], w_signf_trunc, w_binary[2]"
+      ],
+      "metadata": {
+        "id": "NkudBTQ8_xpc"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "#### For each N[i], run an experiment where you sum a list of values x[:N[i]] using alg_sum()\n",
+        "- N = [10, 100, 1000, 10000, 100000, 1000000, 10000000]\n",
+        "- N[i] == problem size, t[:len(N)] == list holding computed sums\n",
+        "- initialize x[:] so that all elements have the value 0.1. Store the computed sum in t[i]\n",
+        "- result: [0.9999999999999999,\n",
+        " 9.99999999999998,\n",
+        " 99.9999999999986,\n",
+        " 1000.0000000001588,\n",
+        " 10000.000000018848,\n",
+        " 100000.00000133288,\n",
+        " 999999.9998389754]"
+      ],
+      "metadata": {
+        "id": "6ddhMnOAEceu"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def alg_sum(x): # x == x[:n]\n",
+        "    s = 0.\n",
+        "    for x_i in x: # x_0, x_1, \\ldots, x_{n-1}\n",
+        "        s += x_i\n",
+        "    return s"
+      ],
+      "metadata": {
+        "id": "pA5MqRdKGCuY"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def calc_summation(N):\n",
+        "    # Initialize an array t of size len(N) to all zeroes.\n",
+        "    t = [0.0] * len(N)\n",
+        "\n",
+        "    # Your code should do the experiment described above for\n",
+        "    # each problem size N[i], and store the computed sum in t[i].\n",
+        "\n",
+        "    ### BEGIN SOLUTION\n",
+        "    x = [0.1] * max(N)\n",
+        "    t = [alg_sum(x[0:n]) for n in N]\n",
+        "\n",
+        "    return t\n",
+        "\n",
+        "    # my ver --------------------------------------------------\n",
+        "    # Initialize an array t of size len(N) to all zeroes.\n",
+        "    x = [0.1] * max(N)\n",
+        "\n",
+        "    for idx in range(len(N)): #loop i - 0 1 2 3 4 5 6\n",
+        "        t[idx] = alg_sum(x[:N[idx]])\n",
+        "    return t"
+      ],
+      "metadata": {
+        "id": "MxWTrTIcFuF_"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "#### Computing Dot products\n"
+      ],
+      "metadata": {
+        "id": "cJ1_-_-iG-pk"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def alg_dot (x, y):\n",
+        "    p = [xi*yi for (xi, yi) in zip (x, y)]\n",
+        "    s = alg_sum (p)\n",
+        "    return s"
+      ],
+      "metadata": {
+        "id": "vUjswcEbHL2u"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "#### more accurate sum than alg_sum()\n",
+        "- \"implement\" the error formula to somehow compensate for the round-off error\n",
+        "- result: 1511887168.6827796"
+      ],
+      "metadata": {
+        "id": "b5v9bqHdHNDf"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def alg_sum_accurate(x):\n",
+        "    assert type(x) is list\n",
+        "    ### BEGIN SOLUTION\n",
+        "    # Idea: Each term of the error bound is $(n-i) |x_i| \\epsilon$.\n",
+        "    # In other words, lower values of $i$ have a larger coefficient $n-i$.\n",
+        "    # Therefore, one idea is simply to _sort_ the data in increasing order\n",
+        "    # of **magnitude** (absolute value), so that the larger coefficients\n",
+        "    # are paired with the smaller values.\n",
+        "    x_sorted = sorted(x, key=abs)\n",
+        "    return sum(x_sorted)\n"
+      ],
+      "metadata": {
+        "id": "mqu53bhdHmvb"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "\n",
+        "\n",
+        "---\n",
+        "# Notebook 5\n",
+        "#### checking SSN format xxx-xx-xxxx"
+      ],
+      "metadata": {
+        "id": "HKPrXbMaILzf"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def is_ssn(s):\n",
+        "\n",
+        "    parts = s.split('-')\n",
+        "    correct_lengths = [3, 2, 4]\n",
+        "    if len(parts) != len(correct_lengths):\n",
+        "        return False\n",
+        "    for p, n in zip(parts, correct_lengths):\n",
+        "        if not (p.isdigit() and len(p) == n):\n",
+        "            return False\n",
+        "    return True"
+      ],
+      "metadata": {
+        "id": "6_PARKYHKV3P"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "### ReGex\n",
+        "- Search Methods\n",
+        "1. match() - Determine if the RE matches at the beginning of the string.\n",
+        "2. search() - Scan through a string, looking for any location where this RE matches\n",
+        "3. findall() - Find all substrings where the RE matches, and returns them as a *list*\n",
+        "4. finditer() - Find all substrings where the RE matches, and returns them as an *iterator*\n",
+        "\n",
+        "- Metacharacter classes\\\n",
+        "vowels = '[aeiou]'\n",
+        "- Counts: For instance, two or more consecutive vowels:\n",
+        "two_or_more_vowels = vowels + '{2,}'\n",
+        "- Wildcards\\\n",
+        "cats = \"ca+t\"\n",
+        "- Predefined character classes\\\n",
+        "three_digits = '\\d\\d\\d'\n",
+        "- Special operator: \"or\"\\\n",
+        "adjectives = \"lazy|brown\""
+      ],
+      "metadata": {
+        "id": "eGuhw7CtKb8I"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "#### parse_email\n",
+        "- given an email address s, returns a tuple, (user-id, domain)\n",
+        "- result: (False, ('richie', 'cc.gatech.edu'))"
+      ],
+      "metadata": {
+        "id": "zW_tECgPM__V"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "### Helper Functions\n",
+        "def eif_wrapper(s, func):\n",
+        "    raised_value_error = False\n",
+        "    result = None\n",
+        "    try:\n",
+        "        result = func(s)\n",
+        "    except ValueError:\n",
+        "        raised_value_error = True\n",
+        "    finally:\n",
+        "        return (raised_value_error, result)\n",
+        "\n",
+        "\n",
+        "### Solution - Exercise 1\n",
+        "def parse_email(s):\n",
+        "    ### BEGIN SOLUTION\n",
+        "    pattern = r'''\n",
+        "       ^\n",
+        "       (?P<user>[a-zA-Z][\\w.\\-+]*)\n",
+        "       @\n",
+        "       (?P<domain>[\\w.\\-]*[a-zA-Z])\n",
+        "       $\n",
+        "    '''\n",
+        "    matcher = re.compile(pattern, re.VERBOSE)\n",
+        "    matches = matcher.match(s)\n",
+        "    if matches:\n",
+        "        return (matches.group('user'), matches.group('domain'))\n",
+        "    raise ValueError('Bad email address')"
+      ],
+      "metadata": {
+        "id": "WzcolDZUNOwV"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "#### parse phone numbers\n",
+        "- return a triple of strings, (area_code, first_three, last_four)\n",
+        "- result: ('404', '121', '2121')"
+      ],
+      "metadata": {
+        "id": "GacAanFUNuCz"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def parse_phone1(s):\n",
+        "\n",
+        "    def parse_phone1(s):\n",
+        "    ### BEGIN SOLUTION\n",
+        "    pattern = r'''\n",
+        "       \\s*\n",
+        "       \\((?P<area>\\d{3})\\)\n",
+        "       \\s*\n",
+        "       (?P<local3>\\d{3})\n",
+        "       -\n",
+        "       (?P<local4>\\d{4})\n",
+        "    '''\n",
+        "    matcher = re.compile(pattern, re.VERBOSE)\n",
+        "    matches = matcher.match(s)\n",
+        "    if matches:\n",
+        "        return (matches.group('area'), matches.group('local3'), matches.group('local4'))\n",
+        "    raise ValueError(\"Invalid phone number? '{}'\".format(s))\n",
+        "\n",
+        "    # my ver -------------------------------------------------------------------\n",
+        "    pattern = re.compile(r''' ^\n",
+        "                \\s*\n",
+        "                \\(\n",
+        "                (\\d{3})\n",
+        "                \\)\n",
+        "                \\s*\n",
+        "                (\\d{3})\n",
+        "                \\-\n",
+        "                (\\d{4})\n",
+        "                \\s*\n",
+        "                $\n",
+        "                ''', re.VERBOSE)\n",
+        "        matches = pattern.match(s)\n",
+        "        if not matches:\n",
+        "        raise ValueError\n",
+        "    return matches.groups()"
+      ],
+      "metadata": {
+        "id": "zgHyy3MkOEws"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "#### parse phone numbers handling any patterns"
+      ],
+      "metadata": {
+        "id": "fbCujLkmSNHb"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def parse_phone2(s):\n",
+        "    ### BEGIN SOLUTION\n",
+        "    pattern = '''\n",
+        "        ^\\s*\n",
+        "        (?P<areacode>\n",
+        "           \\d{3}-?\n",
+        "           | \\(\\d{3}\\)\\s*\n",
+        "        )\n",
+        "        (?P<prefix>\\d{3})\n",
+        "        -?\n",
+        "        (?P<suffix>\\d{4})\n",
+        "        \\s*$\n",
+        "    '''\n",
+        "    matcher = re.compile(pattern, re.VERBOSE)\n",
+        "    matches = matcher.match(s)\n",
+        "    if matches is None:\n",
+        "        raise ValueError(\"'{}' is not in the right format.\".format(s))\n",
+        "    areacode = re.search(r'\\d{3}', matches.group('areacode')).group()\n",
+        "    prefix = matches.group('prefix')\n",
+        "    suffix = matches.group('suffix')\n",
+        "    return (areacode, prefix, suffix)\n",
+        "\n",
+        "    # my ver---------------------------------------------------------\n",
+        "    pattern = re.compile('''\n",
+        "            ^\\s*\n",
+        "            (\\()?\n",
+        "            (\\d{3})\n",
+        "            (?(1)\\))\n",
+        "            \\-?\n",
+        "            \\s*\n",
+        "            (\\d{3})\n",
+        "            \\-?\n",
+        "            (\\d{4})\n",
+        "            \\s*$\n",
+        "            ''', re.VERBOSE)\n",
+        "    matches = pattern.match(s)\n",
+        "\n",
+        "    if not matches:\n",
+        "        raise ValueError\n",
+        "\n",
+        "    return matches.group(2), matches.group(3), matches.group(4)"
+      ],
+      "metadata": {
+        "id": "NhdU1tMOSeY8"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "#### Extract Ranking\n",
+        "-     GOAL: parse the yelp webpage and retrieve the ranked items in the fried chicken list\n",
+        "- return a list of dictionary with resaurant 'name', 'stars', 'numrevs', and 'price' keys for each item\n",
+        "- rankings[i] == a dictionary of the restaurant whose rank is i+1\n",
+        "- each dictionary, rankings[i], should have these keys:\\\n",
+        "rankings[i]['name']: str\\\n",
+        "rankings[i]['stars']: str\\\n",
+        "rankings[i]['numrevs']: int\\\n",
+        "rankings[i]['price']: '＄'\n",
+        "- result: [{'name': 'Gus’s World Famous Fried Chicken', 'numrevs': 549, 'price': '$$', 'stars': '4.0'},\n",
+        " {'name': 'South City Kitchen - Midtown', 'numrevs': 1777, 'price': '$$', 'stars': '4.5'}]"
+      ],
+      "metadata": {
+        "id": "N_-H000KUAlE"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def extract_ranking(yelp_html):\n",
+        "    ### BEGIN SOLUTION\n",
+        "    matchers = {\n",
+        "        'name': re.compile(r'class=\"biz-name[^\\\"]*\"[^>]*>\\s*<span>(.*?)</span>', re.DOTALL),\n",
+        "        'stars': re.compile(r'title=\"([0-9.]+)\\s+star\\s+rating\"'),\n",
+        "        'numrevs': re.compile(r'(\\d+)\\s+reviews'),\n",
+        "        'price': re.compile(r'class=\"business-attribute\\s+price-range\">(\\$+)</span>'),\n",
+        "    }\n",
+        "\n",
+        "    def get_field(s, key):\n",
+        "        match = matchers[key].search(s)\n",
+        "        return match.group(1).strip() if match else None\n",
+        "\n",
+        "    sections = re.split(r'<li\\s+class=\"regular-search-result[^\\\"]*\"[^>]*>', yelp_html)\n",
+        "    rankings = []\n",
+        "    for section in sections[1:]:\n",
+        "        row = {key: get_field(section, key) for key in matchers}\n",
+        "        if any(value is None for value in row.values()):\n",
+        "            continue\n",
+        "        row['numrevs'] = int(row['numrevs'])\n",
+        "        rankings.append(row)\n",
+        "        if len(rankings) == 10:\n",
+        "            break\n",
+        "\n",
+        "    return rankings\n",
+        "\n",
+        "    # my ver ------------------------------------------------------------------\n",
+        "\n",
+        "    ### INPUT: a string containing an html webpage with ads and a ranked list\n",
+        "    sections = re.split(r'<li\\s+class=\\\"regular-search-result[^\\\"]*\\\"[^>]*>', yelp_html)[1:]\n",
+        "    #print(type(sections))\n",
+        "    # print(sections[1])\n",
+        "    #html:\n",
+        "    # starting index\n",
+        "    rank_pat = re.compile(r'<span\\s+class=\"indexed-biz-name\">\\s*(\\d+)\\.')\n",
+        "    # - restaurant name is enclosed\n",
+        "    name_pat = re.compile(r'<span>(.*?)</span>')\n",
+        "    # - title is indicated using title  = X.Y star rating\n",
+        "    star_pat = re.compile(r'title=\\\"(\\d\\.\\d) star rating\\\"')\n",
+        "    # - numrevs\n",
+        "    numrevs_pat = re.compile(r'<span\\s+class=\\\"review-count\\s+rating-qualifier\\\">\\s*(\\d+)\\s+reviews\\s*</span>', re.DOTALL)\n",
+        "    # - price\n",
+        "    price_pat = re.compile(r'<span\\s+class=\\\"business-attribute\\s+price-range\\\">\\s*(\\$+)\\s*</span>')\n",
+        "\n",
+        "    # ''' STRATEGY:\n",
+        "    # - Find the right starting index for regex searches\n",
+        "    # - Find out where the rankings start and avoid the ads\n",
+        "    # - find each dictionary item sequentially, and loop\n",
+        "    #     - update the starting position after each set of information based on finding the next restaurant in the ranked list\n",
+        "    # '''\n",
+        "\n",
+        "    #SOLUTION\n",
+        "    rankings = []\n",
+        "\n",
+        "    for section in sections:\n",
+        "        output = {}\n",
+        "        #print(name_pat)\n",
+        "        output['name'] = name_pat.search(section).group(1)\n",
+        "        output['stars'] = (star_pat.search(section).group(1))\n",
+        "        output['numrevs'] = int(numrevs_pat.search(section).group(1))\n",
+        "        output['price'] = price_pat.search(section).group(1)\n",
+        "\n",
+        "        rankings.append(output)\n",
+        "    return rankings"
+      ],
+      "metadata": {
+        "id": "w_cRO0huU_TP"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "\n",
+        "\n",
+        "---\n",
+        "# Notebook 7: Tidy Data Transformations with Pandas\n",
+        "\n",
+        "**head()** to return the first n rows of a DataFrame. By default, it returns the first 5 rows\\\n",
+        "irises['sepal length'].head()\\\n",
+        "irises[[\"sepal length\", \"petal width\"]].head()\n",
+        "\n",
+        "**unique()** Return unique values based on a hash table.\n",
+        "irises['species'].unique()\n",
+        "\n",
+        "**loc()** label-based indexing to access rows and columns in a DataFrame\\\n",
+        "irises.sort_values(by=\"sepal length\", ascending=False).loc[5:10]\n",
+        "\n",
+        "**sort_value()** Sort by the values along either axis.\n",
+        "irises.sort_values(by=\"sepal length\", ascending=False).head(1)\n",
+        "\n",
+        "**iloc()** integer position based (from 0 to length-1 of the axis), but may also be used with a boolean array.\n",
+        "irises.sort_values(by=\"sepal length\", ascending=False).iloc[5:10]\n",
+        "\n"
+      ],
+      "metadata": {
+        "id": "PKPMEVCZWok6"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "**StringIO** object to treat a string containing CSV data as if it were a file:\n",
+        "- StringIO(A_csv) Creates an in-memory file-like object from the string.\n",
+        "- Pandas read_csv() can read from file-like objects, not just actual files."
+      ],
+      "metadata": {
+        "id": "H890DAz5ekcm"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "A_csv = \"\"\"country,year,cases\n",
+        "Afghanistan,1999,745\n",
+        "Brazil,1999,37737\n",
+        "China,1999,212258\n",
+        "Afghanistan,2000,2666\n",
+        "Brazil,2000,80488\n",
+        "China,2000,213766\"\"\"\n",
+        "with StringIO(A_csv) as fp:\n",
+        "    A = pd.read_csv(fp)\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 211
+        },
+        "collapsed": true,
+        "id": "IzZiobVOewzh",
+        "outputId": "3223c71e-5757-4f1d-8663-331a9d35ff61"
+      },
+      "execution_count": 1,
+      "outputs": [
+        {
+          "output_type": "error",
+          "ename": "NameError",
+          "evalue": "name 'StringIO' is not defined",
+          "traceback": [
+            "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+            "\u001b[0;31mNameError\u001b[0m                                 Traceback (most recent call last)",
+            "\u001b[0;32m/tmp/ipykernel_3021/3324750872.py\u001b[0m in \u001b[0;36m<cell line: 0>\u001b[0;34m()\u001b[0m\n\u001b[1;32m      6\u001b[0m \u001b[0mBrazil\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0;36m2000\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0;36m80488\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m      7\u001b[0m China,2000,213766\"\"\"\n\u001b[0;32m----> 8\u001b[0;31m \u001b[0;32mwith\u001b[0m \u001b[0mStringIO\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mA_csv\u001b[0m\u001b[0;34m)\u001b[0m \u001b[0;32mas\u001b[0m \u001b[0mfp\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m      9\u001b[0m     \u001b[0mA\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mpd\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mread_csv\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mfp\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m     10\u001b[0m \u001b[0mprint\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m\"=== A ===\"\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+            "\u001b[0;31mNameError\u001b[0m: name 'StringIO' is not defined"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# left-joining E on D\n",
+        "D.merge(E, on=['x', 'y'], how='left')"
+      ],
+      "metadata": {
+        "id": "fI7SJyIBgTkU"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "### **apply**(func, axis=0, raw=False, result_type=None, args=(), **kwargs)\n",
+        "apply a func to each element, row, or col of a df or series\\\n",
+        "- func : the func to apply to each col or row\n",
+        "- axis : the axis along which the func is applied (0=cols, 1=rows)\n",
+        "- raw : if True, func receive ndarray objs, else Series\n",
+        "- result_type : how the result will be returned (expand, reduce, broadcast, None)\n",
+        "- args : positional arg to pass to the func\n",
+        "- kwargs : additional keyword args to pass to the func\n",
+        "\n",
+        "eg) to convert the year column in C into an abbrievated two-digit form\n",
+        "\n",
+        "G_example = C.copy() # If you do not use copy function the original data frame is modified\n",
+        "\n",
+        "G_example['year'] = G_example['year'].apply(lambda x: \"'{:02d}\".format(x % 100))"
+      ],
+      "metadata": {
+        "id": "-1NSr8ychXEW"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "## Exercise 0: calc_prevalence (2 points)\n",
+        "Your task: define calc_prevalence as follows:\n",
+        "\n",
+        "Suppose you wish to compute the prevalence, which is the ratio of cases to the population.\n",
+        "\n",
+        "The simplest way to do it is as follows:\n",
+        "\n",
+        "G['prevalence'] = G['cases'] / G['population']\n",
+        "However, for this exercise, try to figure out how to use apply() to do it instead. To figure that out, you'll need to consult the documentation for apply() or go online to find some hints.\n",
+        "\n",
+        "Inputs: G, a dataframe with various columns and guaranteed to have the following 2 columns:\n",
+        "\n",
+        "cases\n",
+        "population\n",
+        "Return: H, a new dataframe that is a copy of G with the addition of a new column named 'prevalence' holding the correctly computed prevalence values.\n",
+        "\n",
+        "Requirements/steps:\n",
+        "\n",
+        "Do not modify the input dataframe G\n",
+        "Although there is the easy solution above, the purpose of this exercise is to force you to learn more about how apply() works, so that you can \"apply\" it in more settings in the future."
+      ],
+      "metadata": {
+        "id": "rlBbkWFNiogH"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Goal:  compute the prevalence, which is the ratio of cases to the population.\n",
+        "        # G['prevalence'] = G['cases'] / G['population']\n",
+        "# Result: H, a new dataframe that is a copy of G with the addition of a new column named 'prevalence' holding the correctly computed prevalence values.\n",
+        "\n",
+        "'''\n",
+        "Input: G, a dataframe with various columns and guaranteed to have the following 2 columns:\n",
+        "- cases, population\n",
+        "'''\n",
+        "\n",
+        "'''\n",
+        "Strategy:\n",
+        "1. Do not modify the input dataframe G\n",
+        "    - create a copy of df G\n",
+        "2. Although there is the easy solution above, the purpose of this exercise is to force you to learn more about how apply() works, so that you can \"apply\" it in more settings in the future.\n",
+        "    - use apply()\n",
+        "'''\n",
+        "\n",
+        "### Solution - Exercise 0\n",
+        "\n",
+        "def calc_prevalence(G):\n",
+        "    assert 'cases' in G.columns and 'population' in G.columns\n",
+        "    ###\n",
+        "    ### YOUR CODE HERE\n",
+        "    print(G)\n",
+        "    H = G.copy()\n",
+        "\n",
+        "    H['prevalence'] = H.apply(lambda row:row['cases']/row['population'], axis=1) # row can be any character name\n",
+        "    return H"
+      ],
+      "metadata": {
+        "id": "lGh0gzRerlLY"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "##Exercise 1: canonicalize_tibble (3 points)\n",
+        "Your task: define canonicalize_tibble as follows:\n",
+        "\n",
+        "Given a tibble X, return a new copy Y of X in canonical order. We say Y is in canonical order if it has the following properties.\n",
+        "\n",
+        "The variables appear in sorted order by name, ascending from left to right.\n",
+        "The rows appear in lexicographically sorted order by variable, ascending from top to bottom.\n",
+        "The row labels (Y.index) go from 0 to n-1, where n is the number of observations.\n",
+        "For instance, here is a non-canonical tibble ...\n",
+        "\n",
+        "c\ta\tb\n",
+        "2\that\tx\t1\n",
+        "0\trat\ty\t4\n",
+        "3\tcat\tx\t2\n",
+        "1\tbat\tx\t2\n",
+        "... and here is its canonical counterpart.\n",
+        "\n",
+        "a\tb\tc\n",
+        "0\tx\t1\that\n",
+        "1\tx\t2\tbat\n",
+        "2\tx\t2\tcat\n",
+        "3\ty\t4\trat\n",
+        "A partial solution appears below, which ensures that Property 1 above holds. Complete the solution to ensure Properties 2 and 3 hold. Feel free to consult the Pandas API.\n",
+        "\n",
+        "Hint. For Property 3, you may find reset_index() handy: https://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.reset_index.html\n"
+      ],
+      "metadata": {
+        "id": "0NxRrYAtuIgh"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Goal: return a new copy Y of X in canonical order\n",
+        "# Result: Y is in canonical order\n",
+        "'''\n",
+        "Input: tibble X\n",
+        "'''\n",
+        "\n",
+        "'''\n",
+        "Strategey: Y is in canonical order if:\n",
+        "1. The variables appear in sorted order by name, ascending from left to right.\n",
+        "2. The rows appear in lexicographically (alphabetically) sorted order by variable, ascending from top to bottom.\n",
+        "3. The row labels (Y.index) go from 0 to n-1, where n is the number of observations.\n",
+        "'''\n",
+        "### Solution - Exercise 1\n",
+        "\n",
+        "def canonicalize_tibble(X):\n",
+        "    # Enforce Property 1:\n",
+        "    var_names = sorted(X.columns)\n",
+        "    Y = X[var_names].copy()\n",
+        "\n",
+        "    ###\n",
+        "    ### YOUR CODE HERE\n",
+        "    Y.sort_values(by = var_names, inplace = True)\n",
+        "    Y.set_index([list(range(0, len(Y)))], inplace = True)\n",
+        "    return Y\n",
+        "'''\n",
+        "inplace == Whether to modify the DataFrame rather than creating a new one.\n",
+        "- inplace = True; changes the actual list itself while sorting.\n",
+        "- inplace = False ; will return a new sorted list without changing the original (default)\n",
+        "- inplace means the existing data is modified, and without inplace, the existing data is copied to another place and some action is performed on the new data. So the existing data is preserved.\n",
+        "'''\n",
+        "\n",
+        "'''\n",
+        "set_index(keys, drop=True, append=False, inplace=False, verify_integrity=<no_default>)\n",
+        "- keys: label/array/list of lables\n",
+        "- drop: delete cols to be used as the new index\n",
+        "- append : whether to append cols to existing index. True=> add new cols to exsting index. False => current index will be dropped from df\n",
+        "- verify_integrity: check new index for duplicates\n",
+        "'''\n",
+        "\n",
+        "### Exercise Demo\n",
+        "X = pd.DataFrame(\n",
+        "    columns=['c', 'a', 'b'],\n",
+        "    data=[['hat', 'x', 1], ['rat', 'y', 4], ['cat', 'x', 2], ['bat', 'x', 2]],\n",
+        "    index=[2, 0, 3, 1],\n",
+        ")\n",
+        "ex1_output = canonicalize_tibble(X)\n",
+        "display(ex1_output)\n"
+      ],
+      "metadata": {
+        "id": "budV93k_uKir"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "concat(): Merge multiple Series or DataFrame objects along a shared index or column\n",
+        "\n",
+        "DataFrame.join(): Merge multiple DataFrame objects along the columns\n",
+        "\n",
+        "DataFrame.combine_first(): Update missing values with non-missing values in the same location\n",
+        "\n",
+        "merge(): Combine two Series or DataFrame objects with SQL-style joining\n",
+        "\n",
+        "merge_ordered(): Combine two Series or DataFrame objects along an ordered axis\n",
+        "\n",
+        "merge_asof(): Combine two Series or DataFrame objects by near instead of exact matching keys\n",
+        "\n",
+        "Series.compare() and DataFrame.compare(): Show differences in values between two Series or DataFrame objects"
+      ],
+      "metadata": {
+        "id": "ucvggvA9uZxn"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Basic tidying transformations: Melting and casting\n",
+        "Given a data set and a target set of variables, there are at least two common issues that require tidying.\n",
+        "\n",
+        "Melting\n",
+        "First, values often appear as columns. Table 4a is an example. To tidy up, you want to turn columns into rows:\n",
+        "\n",
+        "Gather example\n",
+        "\n",
+        "Because this operation takes columns into rows, making a \"fat\" table more tall and skinny, it is sometimes called melting.\n",
+        "\n",
+        "To melt the table, you need to do the following.\n",
+        "\n",
+        "Extract the column values into a new variable. In this case, columns \"1999\" and \"2000\" of table4 need to become the values of the variable, \"year\".\n",
+        "Convert the values associated with the column values into a new variable as well. In this case, the values formerly in columns \"1999\" and \"2000\" become the values of the \"cases\" variable.\n",
+        "In the context of a melt, let's also refer to \"year\" as the new key variable and \"cases\" as the new value variable.\n",
+        "\n",
+        "##Exercise 3: DEBUG_melt (4 points)\n",
+        "Your task: define DEBUG_melt as follows:\n",
+        "\n",
+        "    def melt(df, col_vals, key, value):\n",
+        "        ...\n",
+        "It should take the following arguments:\n",
+        "\n",
+        "df: the input data frame, e.g., table4 in the example above;\n",
+        "col_vals: a list of the column names that will serve as values; column 1999 & 2000 in example table\n",
+        "key: name of the new variable, e.g., year in the example above;\n",
+        "value: name of the column to hold the values. cases in the example above\n",
+        "Note 0: You may need to refer to the Pandas documentation to figure out how to create and manipulate tables. The bits related to indexing and merging may be especially helpful.\n",
+        "\n",
+        "Note 1: There is a trivial solution to this exercise using pandas.melt. The purpose of this exercise is to become more familiar with manipulating dataframes, so the in-built pd.melt function will be blocked and the test cell will not pass solutions using it.\n",
+        "\n",
+        "\n",
+        "Markdown\n",
+        "concat(): Merge multiple Series or DataFrame objects along a shared index or column\n",
+        "\n",
+        "DataFrame.join(): Merge multiple DataFrame objects along the columns\n",
+        "\n",
+        "DataFrame.combine_first(): Update missing values with non-missing values in the same location\n",
+        "\n",
+        "merge(): Combine two Series or DataFrame objects with SQL-style joining\n",
+        "\n",
+        "merge_ordered(): Combine two Series or DataFrame objects along an ordered axis\n",
+        "\n",
+        "merge_asof(): Combine two Series or DataFrame objects by near instead of exact matching keys\n",
+        "\n",
+        "Series.compare() and DataFrame.compare(): Show differences in values between two Series or DataFrame objects"
+      ],
+      "metadata": {
+        "id": "k2wF90SbH-TQ"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Goal: melt the tabel making a \"fat\" table more tall and skinny\n",
+        "# Result:\n",
+        "\n",
+        "'''\n",
+        "Input:\n",
+        "- df: the input data frame, e.g., table4 in the example above;\n",
+        "- col_vals: a list of the column names that will serve as values; column 1999 & 2000 in example table\n",
+        "- key: name of the new variable, e.g., year in the example above;\n",
+        "- value: name of the column to hold the values. cases in the example above\n",
+        "'''\n",
+        "\n",
+        "'''\n",
+        "Strategy:\n",
+        "1. Extract the column values into a new variable. In this case, columns \"1999\" and \"2000\" of table4 need to become the values of the variable, \"year\".\n",
+        "2. Convert the values associated with the column values into a new variable as well. In this case, the values formerly in columns \"1999\" and \"2000\" become the values of the \"cases\" variable.\n",
+        "In the context of a melt, let's also refer to \"year\" as the new key variable and \"cases\" as the new value variable.\n",
+        "'''\n",
+        "### Solution - Exercise 3\n",
+        "\n",
+        "def DEBUG_melt(df, col_vals, key, value):\n",
+        "    # FIXME\n",
+        "    assert type(df) is pd.DataFrame\n",
+        "    keep_vars = df.columns.difference(col_vals)\n",
+        "    print(df)\n",
+        "    #Convert the values associated with the column values into a new variable\n",
+        "    melted_sections = []\n",
+        "    for c in col_vals:\n",
+        "        melted_c = df[keep_vars].copy()\n",
+        "        melted_c[key] = c\n",
+        "        melted_c[value] = df[c]\n",
+        "        melted_sections.append(melted_c)\n",
+        "    melted_df = pd.concat(melted_sections)\n",
+        "    return melted_df\n",
+        "\n",
+        "\n",
+        "### Exercise Demo\n",
+        "table4 = pd.DataFrame({'country': ['A', 'B'], 1999: [10, 20], 2000: [11, 21]})\n",
+        "ex3_output = DEBUG_melt(table4, [1999, 2000], 'year', 'cases')\n",
+        "display(ex3_output)"
+      ],
+      "metadata": {
+        "id": "huTsI8m9OWyz"
+      },
+      "execution_count": null,
+      "outputs": []
+    }
+  ]
+}
