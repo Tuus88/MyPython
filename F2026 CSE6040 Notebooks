@@ -4,7 +4,7 @@
   "metadata": {
     "colab": {
       "provenance": [],
-      "authorship_tag": "ABX9TyMp/bt3xmg86LyCumlal8gP",
+      "authorship_tag": "ABX9TyPd7L9BAZrj7XybaTRjt7F+",
       "include_colab_link": true
     },
     "kernelspec": {
@@ -1537,7 +1537,7 @@
         "id": "IzZiobVOewzh",
         "outputId": "3223c71e-5757-4f1d-8663-331a9d35ff61"
       },
-      "execution_count": 1,
+      "execution_count": null,
       "outputs": [
         {
           "output_type": "error",
@@ -1575,16 +1575,34 @@
         "- result_type : how the result will be returned (expand, reduce, broadcast, None)\n",
         "- args : positional arg to pass to the func\n",
         "- kwargs : additional keyword args to pass to the func\n",
-        "\n",
-        "eg) to convert the year column in C into an abbrievated two-digit form\n",
-        "\n",
-        "G_example = C.copy() # If you do not use copy function the original data frame is modified\n",
-        "\n",
-        "G_example['year'] = G_example['year'].apply(lambda x: \"'{:02d}\".format(x % 100))"
+        "\n"
       ],
       "metadata": {
         "id": "-1NSr8ychXEW"
       }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# eg) to convert the year column in C into an abbrievated two-digit form\n",
+        "\n",
+        "G_example = C.copy() # If you do not use copy function the original data frame is modified\n",
+        "\n",
+        "G_example['year'] = G_example['year'].apply(lambda x: \"'{:02d}\".format(x % 100))\n",
+        "\n",
+        "#alternative\n",
+        "f\"'{x%100:02d'}\"\n",
+        "'''\n",
+        "- x % 100 keeps only the last two digits of x (2026 becomes 26, 2005 becomes 5).\n",
+        "- {:02d} formats that number as a whole number at least 2 digits wide, adding a leading zero if needed (5 becomes 05).\n",
+        "- The ' before the { is plain text inside the string, so it appears at the start of the result.\n",
+        "'''"
+      ],
+      "metadata": {
+        "id": "ggLQpz_4xHcC"
+      },
+      "execution_count": null,
+      "outputs": []
     },
     {
       "cell_type": "markdown",
@@ -1836,6 +1854,7 @@
         "1. Extract the column values into a new variable. In this case, columns \"1999\" and \"2000\" of table4 need to become the values of the variable, \"year\".\n",
         "2. Convert the values associated with the column values into a new variable as well. In this case, the values formerly in columns \"1999\" and \"2000\" become the values of the \"cases\" variable.\n",
         "In the context of a melt, let's also refer to \"year\" as the new key variable and \"cases\" as the new value variable.\n",
+        "3. use pandas.pivot_table and DataFrame.pivot\n",
         "'''\n",
         "### Solution - Exercise 3\n",
         "\n",
@@ -1862,6 +1881,459 @@
       ],
       "metadata": {
         "id": "huTsI8m9OWyz"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "##Casting\n",
+        "an observation might be split across multiple rows.\\\n",
+        " only need to know the key, which is column of the input table containing new variable names, and the value, which is the column containing corresponding values.\n",
+        "\n",
+        " ##Exercise 4: DEBUG_cast (4 points)\n",
+        "Your task: define DEBUG_cast as follows:\n",
+        "\n",
+        "Implement a function to cast a data frame into a tibble, given a key column containing new variable names and a value column containing the corresponding cells.\n",
+        "\n",
+        "We've given you a partial solution that\n",
+        "\n",
+        "- verifies that the given key and value columns are actual columns of the input data frame;\n",
+        "- computes the list of columns, fixed_vars, that should remain unchanged; and\n",
+        "- initializes an empty tibble.\n",
+        "\n",
+        "Observe that we are asking your cast() to accept an optional parameter, join_how, that may take the values 'outer' or 'inner' (with 'outer' as the default). Why do you need such a parameter?\n",
+        "\n",
+        "Note 0: There is a trivial solution to this exercise using pandas.pivot_table and DataFrame.pivot. The purpose of this exercise is to become more familiar with manipulating dataframes, so the two aforementioned in-built functions will be blocked and the test cell will not pass solutions using it."
+      ],
+      "metadata": {
+        "id": "a1g8LhLzDyb5"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "**difference**()\n"
+      ],
+      "metadata": {
+        "id": "z4b8v1ikaqqN"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Goal: Implement a function to cast a data frame into a tibble, given a key column containing new variable names and a value column containing the corresponding cells.\n",
+        "# to become more familiar with manipulating dataframes, so the two aforementioned in-built functions will be blocked and the test cell will not pass solutions using it.\n",
+        "# Result: tibble\n",
+        "\n",
+        "'''\n",
+        "Input:\n",
+        "- df,\n",
+        "- key : new variable name column\n",
+        "- value : column containing corresponding cells\n",
+        "- join_how='outer'\n",
+        "'''\n",
+        "\n",
+        "'''\n",
+        "Strategy:\n",
+        "1. verifies that the given key and value columns are actual columns of the input data frame;\n",
+        "2. computes the list of columns, fixed_vars, that should remain unchanged; and\n",
+        "3. initializes an empty tibble.\n",
+        "'''\n",
+        "### Solution - Exercise 4\n",
+        "\n",
+        "def DEBUG_cast(df, key, value, join_how='outer'):\n",
+        "    # FIXME\n",
+        "    assert type(df) is pd.DataFrame\n",
+        "    assert key in df.columns and value in df.columns\n",
+        "    assert join_how in ['outer', 'inner']\n",
+        "\n",
+        "    #Get all column names in df except the columns named key and value.\n",
+        "    #fixed_vars represents the identifier columns (columns that stay unchanged), while the other columns are \"melted\" into the new key and value columns.\n",
+        "    fixed_vars = df.columns.difference([key, value])\n",
+        "    tibble = pd.DataFrame(columns=fixed_vars)\n",
+        "\n",
+        "    #pivot (spread) operation, converting a \"long\" table back into a \"wide\" table.\n",
+        "    for variable_name in df[key].unique(): #Loop through each unique value in the key column\n",
+        "        #  keeps only the rows of df whose key column equals variable_name, and saves them as a new DataFrame called df_v.\n",
+        "        # df[...] keeps only the rows marked True.\n",
+        "        df_v = df[df[key] == variable_name] # == variable_name compares each value in that column to variable_name, giving one True or False per row.\n",
+        "        del df_v[key] # deletes the key column from df_v\n",
+        "        df_v = df_v.rename(columns={value: variable_name}) #rename the column named in value to the variable's name.\n",
+        "        # merges this variable's table into the running result tibble, matching rows on the identifier columns in fixed_vars.\n",
+        "        tibble = tibble.merge(df_v, on=list(fixed_vars), how=join_how)\n",
+        "\n",
+        "\n",
+        "### Exercise Demo\n",
+        "df = pd.DataFrame(\n",
+        "    {\n",
+        "        'country': ['A', 'A', 'B', 'B'],\n",
+        "        'year': [1999, 2000, 1999, 2000],\n",
+        "        'variable': ['cases', 'cases', 'cases', 'cases'],\n",
+        "        'value': [10, 11, 20, 21],\n",
+        "    }\n",
+        ")\n",
+        "ex4_output = DEBUG_cast(df, 'variable', 'value')\n",
+        "display(ex4_output)\n"
+      ],
+      "metadata": {
+        "id": "YgF4v63gKsj3"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "In this table, the rate variable combines what had previously been the cases and population data. This example is an instance in which we might want to separate a column into two variables.\n",
+        "\n",
+        "## Exercise 5: DEBUG_separate (3 points)\n",
+        "Your task: define DEBUG_separate as follows:\n",
+        "\n",
+        "Write a function that takes a data frame (df) and separates an existing column (key) into new variables (given by the list of new variable names, into).\n",
+        "\n",
+        "How will the separation happen? The caller should provide a function, splitter(x), that given a value returns a list containing the components. Observe that the partial solution below defines a default splitter, which uses the regular expression, (\\d+\\.?\\d+), to find all integer or floating-point values in a string input x.\n",
+        "\n",
+        "We have defined the following helper functions as follows:\n",
+        "\n",
+        "default_splitter\n",
+        "\n",
+        "Searches the given string for all integer and floating-point\n",
+        "values, returning them as a list of strings.\n",
+        "\n",
+        "E.g., the call\n",
+        "\n",
+        "default_splitter('Give me $10.52 in exchange for 91 kitten stickers.')\n",
+        "\n",
+        "will return ['10.52', '91']."
+      ],
+      "metadata": {
+        "id": "AH2HF6nSJ8qn"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Goal: Write a function that takes a data frame (df) and separates an existing column (key) into new variables (given by the list of new variable names, into).\n",
+        "# Result:\n",
+        "\n",
+        "'''\n",
+        "Input:\n",
+        "- text\n",
+        "'''\n",
+        "\n",
+        "'''\n",
+        "Stratergy:\n",
+        "How will the separation happen?\n",
+        "1. The caller should provide a function, splitter(x), that given a value returns a list containing the components. Observe that the partial solution below defines a default splitter, which uses the regular expression, (\\d+.?\\d+), to find all integer or floating-point values in a string input x.\n",
+        "'''\n",
+        "### Helper Functions\n",
+        "def default_splitter(text):\n",
+        "    fields = re.findall(r'(\\d+\\.?\\d+)', str(text)) # str(text) turns the input into a string first, so NaN, None or a number won't cause an error. \\.? matches an optional decimal point. re.findall returns every match\n",
+        "    return fields\n",
+        "\n",
+        "\n",
+        "### Solution - Exercise 5\n",
+        "\n",
+        "def DEBUG_separate(df, key, into, splitter=default_splitter):\n",
+        "    # FIXME\n",
+        "\n",
+        "    assert type(df) is pd.DataFrame\n",
+        "    assert key in df.columns\n",
+        "    print(df)\n",
+        "    print(key)\n",
+        "\n",
+        "    # Hint: http://stackoverflow.com/questions/16236684/apply-pandas-function-to-column-to-create-multiple-new-columns\n",
+        "    ## pd.concat([df, df.textcol.apply(lambda s: pd.Series({'feature1':s+1, 'feature2':s-1}))], axis=1)\n",
+        "\n",
+        "    def apply_splitter(text):\n",
+        "        fields = splitter(text)\n",
+        "        # turns the list of numbers into a pd.Series and labels each one with a name from into. The first number gets into[0], the second gets into[1], and so on.\n",
+        "        return pd.Series({into[index]: field for index, field in enumerate(fields)})\n",
+        "\n",
+        "    tibble = df.drop(columns=[key]) # makes a copy of df without the key column and saves it as tibble. The original df doesn't change.\n",
+        "    tibble_extra = df[key].apply(apply_splitter) # runs apply_splitter on every value in the key column. Each call returns a pd.Series, so pandas puts the results together into a new DataFrame, tibble_extra, with one row per original row and one column per name in into.\n",
+        "    return pd.concat([tibble, tibble_extra], axis=1) # axis=1 places the DataFrames side by side, adding columns. The default axis=0 would stack them vertically, adding rows.\n",
+        "\n",
+        "    # def apply_splitter(text):\n",
+        "    #     fields = splitter(text)\n",
+        "    ## The new columns were named in reverse. into[-(index + 1)] gives the first value the last name in into.\n",
+        "    ## For example, with into=['cases', 'population'], the number of cases ended up under population. Using into[index] fixes this.\n",
+        "    #     return pd.Series({into[-(index + 1)]: field for index, field in enumerate(fields)})\n",
+        "\n",
+        "    # tibble = df.copy()\n",
+        "    # tibble_extra = df[key].apply(apply_splitter)\n",
+        "\n",
+        "    ## The tables were stacked instead of joined. axis=0 puts the new rows under the original table, which leaves a lot of NaNs. axis=1 adds the new columns next to the old ones. I also removed ignore_index=True. With axis=1 it would replace the column names with 0, 1, 2…\n",
+        "\n",
+        "    # return pd.concat([tibble, tibble_extra], axis=0, ignore_index=True)\n",
+        "\n",
+        "\n",
+        "### Exercise Demo\n",
+        "df = table3.copy()\n",
+        "ex5_output = DEBUG_separate(df, key='rate', into=['cases', 'population'])\n",
+        "display(ex5_output)\n"
+      ],
+      "metadata": {
+        "id": "z1K2gDFyK2g_"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "\n",
+        "## Exercise 6: unite (2 points)\n",
+        "Your task: define unite as follows:\n",
+        "\n",
+        "Implement the inverse of separate, which is unite. This function should take a data frame (df), the set of columns to combine (cols), the name of the new column (new_var), and a function that takes the subset of the cols variables from a single observation. It should return a new value for that observation.\n",
+        "\n",
+        "We have defined the following helper functions as follows:\n",
+        "\n",
+        "str_join_elements"
+      ],
+      "metadata": {
+        "id": "HnNkC26giVRN"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Goal: Implement the inverse of separate, which is unite\n",
+        "# Result: new value for that observation.\n",
+        "\n",
+        "'''\n",
+        "Input:\n",
+        "1. data frame (df),\n",
+        "2. the set of columns to combine (cols),\n",
+        "3. the name of the new column (new_var), and\n",
+        "4. a function that takes the subset of the cols variables from a single observation\n",
+        "'''\n",
+        "\n",
+        "'''\n",
+        "Strategy:\n",
+        "use helper functions: str_join_elements(x, sep='')\n",
+        "'''\n",
+        "### Helper Functions\n",
+        "def str_join_elements(x, sep=''):\n",
+        "    assert type(sep) is str\n",
+        "    return sep.join([str(xi) for xi in x])\n",
+        "\n",
+        "\n",
+        "### Solution - Exercise 6\n",
+        "\n",
+        "def unite(df, cols, new_var, combine=str_join_elements):\n",
+        "    # Hint: http://stackoverflow.com/questions/13331698/how-to-apply-a-function-to-two-columns-of-pandas-dataframe\n",
+        "    ###\n",
+        "    ### YOUR CODE HERE\n",
+        "    assert type(df) is pd.DataFrame\n",
+        "    for c in cols:\n",
+        "        assert c in df.columns\n",
+        "\n",
+        "    tibble = df.drop(columns=cols)                         # keep every column except the ones being combined\n",
+        "    tibble[new_var] = df[cols].apply(combine, axis=1)      # combine the chosen values in each row into one\n",
+        "    return tibble\n",
+        "\n",
+        "\n",
+        "### Exercise Demo\n",
+        "df = pd.DataFrame({\n",
+        "    'country': ['Afghanistan', 'Afghanistan', 'Brazil', 'Brazil', 'China', 'China'],\n",
+        "    'year': [1999, 2000, 1999, 2000, 1999, 2000],\n",
+        "    'cases': [745, 2666, 37737, 80488, 212258, 213766],\n",
+        "    'population': [19987071, 20595360, 172006362, 174504898, 1272915272, 1280428583],\n",
+        "})\n",
+        "ex6_output = unite(\n",
+        "    df,\n",
+        "    ['cases', 'population'],\n",
+        "    'rate',\n",
+        "    combine=lambda values: str_join_elements(values, '/'),\n",
+        ")\n",
+        "display(ex6_output)"
+      ],
+      "metadata": {
+        "id": "Pb9ORyBxiauF"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "## Exercise 7: tidy_data (3 points)\n",
+        "Your task: define tidy_data as follows:\n",
+        "\n",
+        "As a first step, create a function with the dataframe who as the input and return a new dataframe who2, with the following properties:\n",
+        "\n",
+        "All the 'new...' columns of who become values of a single variable, case_type. Store the counts associated with each case_type value as a new variable called 'count'.\n",
+        "Remove the iso2 and iso3 columns, since they are redundant with country (which you should keep!).\n",
+        "Keep the year column as a variable.\n",
+        "Remove all not-a-number (NaN) counts. Hint: You can test for a NaN using Python's math.isnan().\n",
+        "Convert the counts to integers. (Because of the presence of NaNs, the counts will be otherwise be treated as floating-point values, which is undesirable since you do not expect to see non-integer counts.)"
+      ],
+      "metadata": {
+        "id": "dt45mh_Qidme"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "\n",
+        "How each requirement is handled:\n",
+        "\n",
+        "Single case_type variable with count: melt takes every 'new...' column and makes it into rows. The old column name goes into case_type, and the cell value goes into count.\n",
+        "Remove iso2 and iso3: these columns are dropped first. country is kept.\n",
+        "Keep year: year is in id_cols, so melt keeps it as a column.\n",
+        "Remove NaN counts: .notna() keeps only rows that have a value. It works on the whole column at once, so you don't need math.isnan() for each row.\n",
+        "Convert counts to integers: after the NaNs are gone, .astype(int) turns the floats back into whole numbers. Calling .copy() first stops pandas from showing a SettingWithCopyWarning.\n",
+        "Result: the output has 4 columns: country, year, case_type, count. It has one row for each country, year and case type that has a reported count.\n",
+        "\n",
+        "If your course wants its own melt helper: some versions of this notebook give you a melt(df, col_vals, key, value) function from an earlier exercise. If the grader requires it, swap in this line:"
+      ],
+      "metadata": {
+        "id": "wpqolqfviyGG"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Goal: create a function with the dataframe\n",
+        "# Result: new dataframe who2\n",
+        "\n",
+        "'''\n",
+        "Input:\n",
+        "who\n",
+        "'''\n",
+        "\n",
+        "'''\n",
+        "Strategy:\n",
+        "- All the 'new...' columns of who become values of a single variable, case_type. Store the counts associated with each case_type value as a new variable called 'count'.\n",
+        "- Remove the iso2 and iso3 columns, since they are redundant with country (which you should keep!).\n",
+        "- Keep the year column as a variable.\n",
+        "- Remove all not-a-number (NaN) counts. Hint: You can test for a NaN using Python's math.isnan().\n",
+        "- Convert the counts to integers. (Because of the presence of NaNs, the counts will be otherwise be treated as floating-point values, which is undesirable since you do not expect to see non-integer counts.)\n",
+        "'''\n",
+        "### Solution - Exercise 7\n",
+        "\n",
+        "def tidy_data(who_raw):\n",
+        "    ###\n",
+        "    ### YOUR CODE HERE\n",
+        "    ###\n",
+        "    # 1. Drop the redundant country codes (keep 'country')\n",
+        "    who2 = who_raw.drop(columns=['iso2', 'iso3'])\n",
+        "\n",
+        "    # 2. Columns that stay as variables: everything that isn't a 'new...' column\n",
+        "    #    (that is, 'country' and 'year')\n",
+        "    id_cols = [c for c in who2.columns if not c.startswith('new')]\n",
+        "\n",
+        "    # 3. Turn every 'new...' column into a value of 'case_type', with its number in 'count'\n",
+        "    who2 = who2.melt(id_vars=id_cols, var_name='case_type', value_name='count')\n",
+        "\n",
+        "    # 4. Remove NaN counts, then convert counts to integers\n",
+        "    who2 = who2[who2['count'].notna()].copy()\n",
+        "    who2['count'] = who2['count'].astype(int)\n",
+        "\n",
+        "    return who2.reset_index(drop=True)\n",
+        "\n",
+        "### Exercise Demo\n",
+        "ex7_output = tidy_data(who.head(100))\n",
+        "display(ex7_output)\n"
+      ],
+      "metadata": {
+        "id": "qFlFdyE9io0K"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "## Exercise 8: split_who (5 points)\n",
+        "Your task: define split_who as follows:\n",
+        "\n",
+        "Create a function with the dataframe who2 as the input and return a new tibble, who3, for which each 'case_type' value is split into three new variables:\n",
+        "\n",
+        "'type', to hold the TB type, having possible values of rel, ep, sn, and sp;\n",
+        "'gender', to hold the gender as a string having possible values of female and male; and\n",
+        "'age_group', to hold the age group as a string having possible values of 0-14, 15-24, 25-34, 35-44, 45-54, 55-64, and 65+.\n",
+        "The input data file is large enough that your solution might take a minute to run. But if it appears to be taking much more than that, you may want to revisit your approach."
+      ],
+      "metadata": {
+        "id": "yaw3nW9zi2kR"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "How it works:\n",
+        "\n",
+        "- One regular expression gets all three parts. new_? matches both new_ and newrel, because the relapse codes don't have an underscore after new. The three capture groups get the TB type (rel, ep, sn or sp), the gender letter and the age digits.\n",
+        "- It's fast. str.extract and map process the whole column at once, without calling a Python function for each row. On the full data set this takes a few seconds, well under the one-minute warning. The age decoder only runs once for each of the 7 age codes.\n",
+        "- Gender is mapped to 'male' or 'female'.\n",
+        "Age group has two special cases: 014 becomes 0-14 and 65 becomes 65+. Every other code is split in the middle, so 2534 becomes 25-34.\n",
+        "case_type is replaced by the three new columns, the same way separate replaces the column it splits. The output columns are country, year, count, type, gender and age_group.\n",
+        "If your grader wants to keep case_type: delete the who2.drop(columns=['case_type']) line and concatenate onto who2 instead. Most versions of this exercise expect it removed, so I left it out."
+      ],
+      "metadata": {
+        "id": "GIub7jZii-GC"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Goal: Create a function with the dataframe\n",
+        "# Result: who3, for which each 'case_type' value is split into three new variables:\n",
+        "\n",
+        "'''\n",
+        "Input: who2\n",
+        "\n",
+        "'''\n",
+        "\n",
+        "'''\n",
+        "Strategy:\n",
+        "1. 'type', to hold the TB type, having possible values of rel, ep, sn, and sp;\n",
+        "2. 'gender', to hold the gender as a string having possible values of female and male; and\n",
+        "3. 'age_group', to hold the age group as a string having possible values of 0-14, 15-24, 25-34, 35-44, 45-54, 55-64, and 65+.\n",
+        "\n",
+        "The input data file is large enough that your solution might take a minute to run. But if it appears to be taking much more than that, you may want to revisit your approach.\n",
+        "'''\n",
+        "### Solution - Exercise 8\n",
+        "\n",
+        "def split_who(who2):\n",
+        "    ###\n",
+        "    ### YOUR CODE HERE\n",
+        "    ###\n",
+        "    # Codes look like 'new_sp_m014', 'new_ep_f1524' or 'newrel_m65' (no underscore after 'new')\n",
+        "    pattern = r'^new_?(rel|ep|sn|sp)_([mf])(\\d+)$'\n",
+        "    parts = who2['case_type'].str.extract(pattern)\n",
+        "    parts.columns = ['type', 'gender', 'age_code']\n",
+        "\n",
+        "    # Gender: 'm' -> 'male', 'f' -> 'female'\n",
+        "    parts['gender'] = parts['gender'].map({'m': 'male', 'f': 'female'})\n",
+        "\n",
+        "    # Age group: '014' -> '0-14', '1524' -> '15-24', ..., '65' -> '65+'\n",
+        "    def decode_age(code):\n",
+        "        if code == '014':\n",
+        "            return '0-14'\n",
+        "        if code == '65':\n",
+        "            return '65+'\n",
+        "        return code[:2] + '-' + code[2:]\n",
+        "\n",
+        "    age_map = {c: decode_age(c) for c in parts['age_code'].unique()}\n",
+        "    parts['age_group'] = parts['age_code'].map(age_map)\n",
+        "\n",
+        "    # Replace 'case_type' with the three new variables\n",
+        "    who3 = who2.drop(columns=['case_type'])\n",
+        "    who3 = pd.concat([who3, parts[['type', 'gender', 'age_group']]], axis=1)\n",
+        "    return who3\n",
+        "\n",
+        "### Exercise Demo\n",
+        "ex8_output = split_who(who2.head(100))\n",
+        "display(ex8_output)\n"
+      ],
+      "metadata": {
+        "id": "xGryJlDzi5r1"
       },
       "execution_count": null,
       "outputs": []
